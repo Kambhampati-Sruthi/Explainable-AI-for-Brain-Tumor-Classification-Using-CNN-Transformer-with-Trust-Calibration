@@ -1,0 +1,5 @@
+tumor_label,official_test,leaky_removed,dedup_test,leaky_%
+glioma,254,0,254,0.0
+meningioma,306,96,210,31.4
+no_tumor,140,0,140,0.0
+pituitary,300,5,295,1.7

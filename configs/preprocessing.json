@@ -1,0 +1,22 @@
+{
+  "img_size": 256,
+  "resize_policy": "pad",
+  "mask_rule": "binarize >127, pad, resize area+threshold 0.5",
+  "interp_shrink": "INTER_AREA",
+  "interp_enlarge": "INTER_LINEAR",
+  "train_mean": 0.16856,
+  "train_std": 0.18378,
+  "imagenet_mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "imagenet_std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "normalization": "to_be_decided_in_stage3",
+  "split_file": "data/splits.csv",
+  "seed": 42
+}

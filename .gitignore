@@ -1,0 +1,7 @@
+data/cache/
+outputs/
+models/
+__pycache__/
+*.npy
+*.csv
+.ipynb_checkpoints/
