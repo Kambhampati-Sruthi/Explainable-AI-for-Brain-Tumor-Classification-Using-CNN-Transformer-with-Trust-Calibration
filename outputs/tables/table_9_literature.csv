@@ -1,0 +1,15 @@
+model,task,reported result,protocol / source
+ResNet50,classification,weighted F1 0.9820 +- 0.0080 (acc 0.9820),BRISC Table 4; BRISC official test; 3 runs
+InceptionV3,classification,acc 0.6198 +- 0.4797 (unstable training),BRISC Table 4; BRISC official test; 3 runs
+EfficientNet-B0,classification,weighted F1 0.9920 +- 0.0000 (acc 0.9920),BRISC Table 4; +-0.0000 suggests identical runs
+EfficientNet-B1,classification,weighted F1 0.9903 +- 0.0042,BRISC Table 4; BRISC official test
+EfficientNet-B1,classification,"acc 99.70% (997/1000), one run","Diagnostics 2026; official test kept isolated; classification text says 80/20 val split, Table 4 says 70/15/15"
+Swin-HAFNet,classification,acc 0.9963 +- 0.0015,BRISC / Swin-HAFNet Table 3; 3 runs
+Swin Transformer,classification,"acc 96.00, F1 96.00",Swin-HAFNet Table 4; DIFFERENT dataset (Brain Tumors 256x256); community notebook
+ViT,classification,"acc 93.00, F1 94.00",Swin-HAFNet Table 4; different dataset; community notebook
+DeiT-Tiny + Fuzzy Attention,classification,"acc 95.81, F1 96.18",Swin-HAFNet Table 4; different dataset; community notebook
+U-Net,segmentation,weighted mIoU 75.7 (G 69.7 / M 77.1 / P 79.3),BRISC Table 3
+U-Net++,segmentation,weighted mIoU 75.3 (G 71.7 / M 74.2 / P 79.7),BRISC Table 3
+SaberNet,segmentation,weighted mIoU 80.6,BRISC Table 3
+Swin-HAFNet,segmentation,weighted mIoU 82.4 (G 76.0 / M 85.0 / P 85.3),Swin-HAFNet Table 1
+U-Net++ (EffNet-B1 encoder),segmentation,"Dice 0.9055, IoU 0.8442, HD95 12.21 px","Diagnostics 2026; own random 70/15/15 split of the segmentation set, 512 px: NOT comparable to the official split"

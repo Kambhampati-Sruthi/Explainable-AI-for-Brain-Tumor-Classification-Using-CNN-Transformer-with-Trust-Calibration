@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brain tumor XAI</title><link rel="stylesheet" href="/static/app.css"></head>
+<body>
+<header class="hdr"><div class="brand"><span class="logo" aria-hidden="true"></span><div><h1>Brain tumor analysis</h1><p>Classification · segmentation · explainability · trust</p></div></div>
+  <div id="pill" class="pill wait"><span class="dot"></span><span id="pillText">Checking models…</span></div></header>
+<div class="banner warn" id="disc">Research prototype. Not a medical device. Not for clinical use. Images are processed in memory on this computer and are not stored.</div>
+<div class="banner err" id="sysErr" hidden></div>
+
+<main>
+  <section class="card controls">
+    <div id="drop" class="drop" tabindex="0" role="button" aria-label="Upload an MRI slice">
+      <input id="file" type="file" accept="image/png,image/jpeg,image/bmp,image/tiff,image/webp" hidden>
+      <div class="dz-icon" aria-hidden="true">⬆</div><div><b>Drop an MRI slice here</b>, click to browse, or paste (Ctrl+V)</div>
+      <small>PNG · JPEG · BMP · TIFF · WebP, up to <span id="maxmb">15</span> MB. DICOM: export a slice as PNG first.</small>
+      <img id="thumb" alt="" hidden>
+    </div>
+    <div class="fields">
+      <label>Explanation method<select id="method"></select></label>
+      <label>Network layer<select id="layer"><option value="3">features[3] · early, fine detail</option><option value="5">features[5] · middle</option><option value="8" selected>features[8] · last convolution</option></select></label>
+      <label>Implementation<select id="backend"><option value="lib">pytorch-grad-cam library</option><option value="own">Project’s own Grad-CAM</option></select></label>
+    </div>
+  </section>
+
+  <div id="empty" class="card empty">Upload a slice to see the prediction, the tumor outline, the Grad-CAM heat-map and a trust assessment.</div>
+
+  <div id="result" hidden>
+    <section class="card verdict">
+      <div class="v-left"><div class="label">Prediction</div><div id="cls" class="cls"></div><div class="sub"><span id="conf"></span> calibrated confidence · <span id="band"></span></div></div>
+      <div class="v-mid"><div class="label">Trust level</div><div id="trust" class="badge"></div><p id="trustSum" class="sub"></p></div>
+      <div class="v-right"><button id="dlPng" class="btn">Download report (PNG)</button><button id="dlJson" class="btn ghost">Download data (JSON)</button></div>
+    </section>
+    <ul id="warnings" class="warnlist"></ul>
+
+    <nav class="tabs" role="tablist"><button class="tab on" data-tab="over">Overview</button><button class="tab" data-tab="cmp">Compare methods</button><button class="tab" data-tab="det">Details</button></nav>
+
+    <section id="tab-over" class="tabpane">
+      <div class="grid2">
+        <div class="card viewer">
+          <div class="stage" id="stage"><div class="zoom" id="zoom"><img id="base" alt="MRI slice"><div class="ov" id="ov"><img id="heat" alt="Grad-CAM heat-map"><img id="fill" alt=""><img id="edge" alt="tumor outline"></div></div><div class="spin" id="spin" hidden><span></span></div></div>
+          <div class="vctl">
+            <label class="chk"><input type="checkbox" id="cHeat" checked> Heat-map</label><label class="chk"><input type="checkbox" id="cFill" checked> Region fill</label><label class="chk"><input type="checkbox" id="cEdge" checked> Outline</label>
+            <label>Heat-map opacity<input type="range" id="oHeat" min="0" max="100" value="70"></label>
+            <label>Reveal overlays (swipe)<input type="range" id="swipe" min="0" max="100" value="100"></label>
+            <label>Zoom<input type="range" id="zoomR" min="100" max="300" value="100"></label>
+          </div>
+          <p class="hint" id="hint"></p>
+        </div>
+        <div class="stack">
+          <div class="card"><h3>Class probabilities</h3><div id="probs"></div><p class="hint">Calibrated with temperature scaling. Hover a bar for the uncalibrated value.</p></div>
+          <div class="card"><h3>Trust checks</h3><ul id="checks" class="checks"></ul></div>
+          <div class="card"><h3>Tumor region</h3><dl id="meas" class="kv"></dl><p class="hint">Measured in the 256 × 256 analysis frame. Physical size needs the scanner’s pixel spacing, which a PNG does not carry.</p></div>
+        </div>
+      </div>
+      <div class="card"><h3>What the explanation shows</h3><p id="text"></p><p class="hint" id="expNote"></p></div>
+    </section>
+
+    <section id="tab-cmp" class="tabpane" hidden>
+      <div class="card"><h3>Same image, different explanation methods</h3><p class="hint">All maps explain the predicted class. Agreement between methods is a good sign; strong disagreement means the explanation itself is uncertain.</p><div id="cmpMethods" class="cgrid"></div></div>
+      <div class="card"><h3>Grad-CAM at different depths</h3><div id="cmpLayers" class="cgrid"></div></div>
+    </section>
+
+    <section id="tab-det" class="tabpane" hidden>
+      <div class="card"><h3>Technical details</h3><dl id="tech" class="kv"></dl><pre id="json"></pre></div>
+    </section>
+  </div>
+</main>
+<footer><span id="integrity"></span><span>Research prototype · results must be reviewed by a qualified clinician</span></footer>
+<div class="toast" id="toast" role="alert" hidden></div>
+<script src="/static/app.js"></script>
+</body></html>

@@ -1,0 +1,5 @@
+batch,precision,ms_per_batch,ms_per_image,images_per_s
+1,fp32,8.9,8.9,112.3
+1,fp16,9.76,9.76,102.5
+32,fp32,43.17,1.35,741.2
+32,fp16,23.17,0.72,1381.3

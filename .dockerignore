@@ -1,0 +1,7 @@
+.git
+.venv
+data
+notebooks
+outputs
+__pycache__
+*.ipynb

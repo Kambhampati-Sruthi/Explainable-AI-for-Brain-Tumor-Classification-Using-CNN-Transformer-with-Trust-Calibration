@@ -1,0 +1,21 @@
+view,metric,mean,std,min,max
+official,accuracy,0.9867,0.0015,0.985,0.988
+official,macro_f1,0.9878,0.0018,0.986,0.9896
+official,macro_precision,0.9876,0.0023,0.9854,0.99
+official,macro_recall,0.9881,0.0012,0.9867,0.9892
+official,auc_ovr,0.9995,0.0002,0.9994,0.9997
+official,nll,0.0485,0.0063,0.0423,0.0548
+official (3-seed ensemble),accuracy,0.987,,,
+official (3-seed ensemble),macro_f1,0.9878,,,
+official (3-seed ensemble),auc_ovr,0.9997,,,
+official (3-seed ensemble),nll,0.0342,,,
+dedup,accuracy,0.9852,0.0017,0.9833,0.9867
+dedup,macro_f1,0.9855,0.0021,0.9834,0.9875
+dedup,macro_precision,0.9849,0.0022,0.9831,0.9874
+dedup,macro_recall,0.9862,0.0021,0.9837,0.9876
+dedup,auc_ovr,0.9994,0.0002,0.9991,0.9996
+dedup,nll,0.0533,0.007,0.0465,0.0605
+dedup (3-seed ensemble),accuracy,0.9855,,,
+dedup (3-seed ensemble),macro_f1,0.9857,,,
+dedup (3-seed ensemble),auc_ovr,0.9996,,,
+dedup (3-seed ensemble),nll,0.0375,,,

@@ -1,0 +1,21 @@
+{
+  "run_name": "segfinal_s1",
+  "seed": 1,
+  "norm": "imagenet",
+  "batch_size": 16,
+  "loss": "bce_dice",
+  "nested": true,
+  "enc_mode": "full",
+  "negatives": true,
+  "aug": "full",
+  "variant": "b0",
+  "epochs_dec": 2,
+  "epochs_ft": 40,
+  "lr_dec": 0.001,
+  "lr_enc": 0.0001,
+  "weight_decay": 0.01,
+  "warmup_epochs": 1,
+  "clip": 1.0,
+  "patience": 8,
+  "min_delta": 0.0005
+}

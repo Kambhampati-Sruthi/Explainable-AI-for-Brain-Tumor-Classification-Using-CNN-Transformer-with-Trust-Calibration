@@ -1,0 +1,11 @@
+-r requirements-api.txt
+pandas
+scikit-learn
+timm
+captum
+tensorboard
+onnx
+jupyter
+nbformat
+pytest
+httpx

@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+onnxruntime
+numpy
+pillow
+scipy
+matplotlib
+opencv-python-headless
+tqdm

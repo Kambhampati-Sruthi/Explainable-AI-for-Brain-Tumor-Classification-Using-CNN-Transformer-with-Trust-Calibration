@@ -1,0 +1,17 @@
+{
+  "run_name": "final_s1",
+  "seed": 1,
+  "norm": "imagenet",
+  "batch_size": 32,
+  "epochs_head": 3,
+  "epochs_ft": 25,
+  "lr_head": 0.001,
+  "lr_backbone": 0.0001,
+  "weight_decay": 0.01,
+  "warmup_epochs": 1,
+  "clip": 1.0,
+  "patience": 6,
+  "min_delta": 0.001,
+  "label_smoothing": 0.0,
+  "class_weights": null
+}

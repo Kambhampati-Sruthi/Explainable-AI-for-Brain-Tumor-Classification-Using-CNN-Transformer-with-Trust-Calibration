@@ -1,0 +1,11 @@
+{
+  "loss": "bce_dice",
+  "nested": true,
+  "enc_mode": "full",
+  "negatives": true,
+  "aug": "full",
+  "variant": "b0",
+  "epochs_dec": 2,
+  "epochs_ft": 40,
+  "selected_by": "pre-registered rules, validation only"
+}

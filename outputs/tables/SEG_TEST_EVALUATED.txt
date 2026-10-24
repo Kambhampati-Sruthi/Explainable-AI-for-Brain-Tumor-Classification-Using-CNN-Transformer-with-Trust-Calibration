@@ -1,0 +1,1 @@
+segmentation test evaluated Thu Oct 22 11:05:38 2026 | primary segfinal_s2 | thr 0.5

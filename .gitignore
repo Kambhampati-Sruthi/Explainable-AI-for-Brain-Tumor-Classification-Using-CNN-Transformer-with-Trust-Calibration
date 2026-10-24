@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.env
+data/raw/
+data/cache/
+models/*.pt
+models/deploy/*.onnx
+models/deploy/*.pt
+outputs/logs/
+*.npy
+*.zip

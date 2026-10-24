@@ -1,0 +1,2 @@
+params_M,GFLOPs_256,ms_per_img_gpu_fp16_bs16,ms_per_img_cpu_bs1
+6.755277,13.84497664,3.520001077079845,147.86291159980465

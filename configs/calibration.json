@@ -1,0 +1,39 @@
+{
+  "primary_seed": 0,
+  "T": 1.3182396102445122,
+  "bands": [
+    {
+      "lo": 0.0,
+      "hi": 0.5,
+      "n": 0,
+      "acc": NaN,
+      "conf": NaN,
+      "label": "Insufficient data"
+    },
+    {
+      "lo": 0.5,
+      "hi": 0.8,
+      "n": 16,
+      "acc": 0.75,
+      "conf": 0.6493119445151848,
+      "label": "Insufficient data"
+    },
+    {
+      "lo": 0.8,
+      "hi": 0.95,
+      "n": 27,
+      "acc": 0.9629629629629629,
+      "conf": 0.895131580286064,
+      "label": "Under-confident"
+    },
+    {
+      "lo": 0.95,
+      "hi": 1.0,
+      "n": 955,
+      "acc": 0.9968586387434555,
+      "conf": 0.9982129951482155,
+      "label": "Well-calibrated"
+    }
+  ],
+  "norm": "imagenet"
+}

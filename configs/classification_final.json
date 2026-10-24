@@ -1,0 +1,11 @@
+{
+  "arm": "stretch",
+  "norm": "imagenet",
+  "arrays": "stretch",
+  "aug": "full",
+  "weighted": false,
+  "pretrained": true,
+  "epochs_head": 3,
+  "epochs_ft": 25,
+  "selected_by": "pre-registered rule, validation only"
+}

@@ -1,0 +1,1 @@
+test set evaluated 2026-10-22T04:59:17.350744 | config {'arm': 'stretch', 'norm': 'imagenet', 'arrays': 'stretch', 'aug': 'full', 'weighted': False, 'pretrained': True, 'epochs_head': 3, 'epochs_ft': 25, 'selected_by': 'pre-registered rule, validation only'} | primary seed 0
