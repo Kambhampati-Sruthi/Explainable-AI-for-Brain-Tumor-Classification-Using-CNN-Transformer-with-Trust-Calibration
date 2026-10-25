@@ -7,7 +7,7 @@ Upload a single 2D brain MRI slice and get:
 3. an **explanation** (Grad-CAM heat-map showing where the classifier looked),
 4. a **trust level** (HIGH / MEDIUM / LOW) built from confidence, classifier-segmenter agreement and heat-map consistency.
 
-The models were trained in a Kaggle notebook ([view the notebook](https://www.kaggle.com/code/sruthikambhampati/brain-tumor-classification-using-effecientnetunet)). This repository contains the code, the trained checkpoints, the evaluation results and a FastAPI web app that runs everything on a CPU.
+The models were trained in a Kaggle notebook. This repository contains the code, the trained checkpoints, the evaluation results and a FastAPI web app that runs everything on a CPU.
 
 > **Research prototype. Not a medical device. Not for clinical use.** Do not upload patient-identifiable data. Every result must be reviewed by a qualified clinician.
 
