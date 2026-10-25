@@ -11,8 +11,9 @@ from src.segmentation.model import UNetPlusPlus, EffB1Encoder
 from local_app import core
 
 # name shown in the UI -> class in the `grad-cam` library (pip install grad-cam)
-CAM_METHODS = {"Grad-CAM": "GradCAM", "Grad-CAM++": "GradCAMPlusPlus", "HiRes-CAM": "HiResCAM", "XGrad-CAM": "XGradCAM",
-               "Layer-CAM": "LayerCAM", "Eigen-CAM": "EigenCAM", "Score-CAM (slow)": "ScoreCAM"}
+#CAM_METHODS = {"Grad-CAM": "GradCAM", "Grad-CAM++": "GradCAMPlusPlus", "HiRes-CAM": "HiResCAM", "XGrad-CAM": "XGradCAM",
+               #"Layer-CAM": "LayerCAM", "Eigen-CAM": "EigenCAM", "Score-CAM (slow)": "ScoreCAM"}
+CAM_METHODS = {"Grad-CAM": "GradCAM", "Grad-CAM++": "GradCAMPlusPlus", "Layer-CAM": "LayerCAM"}
 LAYERS = {3: "features[3] (early, fine)", 5: "features[5] (middle)", 8: "features[8] (last conv, 8x8; used for trust)"}
 
 

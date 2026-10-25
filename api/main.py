@@ -3,7 +3,9 @@ import io, os, sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from PIL import Image
@@ -31,8 +33,8 @@ def read_image(f: UploadFile) -> Image.Image:
 
 class Prediction(BaseModel):
     cls: str; confidence: float; calibration: str; probabilities: dict
-class AnalyzeResponse(BaseModel):
-    **{"class": str} if False else {}                    # (placeholder removed below)
+#class AnalyzeResponse(BaseModel):
+#    **{"class": str} if False else {}                    # (placeholder removed below)
 
 from pydantic import Field
 
@@ -50,8 +52,22 @@ class AnalyzeResponse(BaseModel):
     model_config = {"populate_by_name": True}
 
 @app.get("/health")
-def health(): return {"status": "ok", "disclaimer": app.state.engine.cfg["disclaimer"]}
+@app.get("/api/health")
+def health():
+    engine = app.state.engine
 
+    return {
+        "status": "ok",
+        "ready": True,
+        "device": str(getattr(engine, "device", "CPU")),
+        "max_mb": 10,
+        "methods": ["Grad-CAM"],
+        "integrity": {"status": "unknown"},
+        "disclaimer": engine.cfg.get(
+            "disclaimer",
+            "Research prototype. Not for clinical use."
+        ),
+    }
 @app.post("/predict", response_model=Prediction)
 def predict(file: UploadFile = File(...)):
     r = app.state.engine.predict(read_image(file))
@@ -92,4 +108,13 @@ def analyze(file: UploadFile = File(...)):
                            tumor_area_px=s["px"] if tumor else None, tumor_area_percent=s["pct"] if tumor else None, explanation=text,
                            heatmap=e.overlay_png(s["arr"], heat=cam, mask=s["mask"] if tumor else None), disclaimer=e.cfg["disclaimer"])
 
-app.mount("/ui", StaticFiles(directory=ROOT / "api" / "static", html=True), name="ui")
+static_dir = ROOT / "webapp" / "static"
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/")
+def read_index():
+    index_file = static_dir / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    raise HTTPException(404, "Frontend UI index.html not found")
