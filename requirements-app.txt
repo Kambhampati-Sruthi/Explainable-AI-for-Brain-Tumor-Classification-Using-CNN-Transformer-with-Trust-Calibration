@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+numpy
+pillow
+scipy
+pandas
+scikit-learn
+matplotlib
+opencv-python-headless
+tqdm
+grad-cam
+captum
+onnxruntime
