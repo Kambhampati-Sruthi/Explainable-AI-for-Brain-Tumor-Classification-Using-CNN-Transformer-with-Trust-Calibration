@@ -6,3 +6,4 @@
 data/** filter=lfs diff=lfs merge=lfs -text
 brisc2025/** filter=lfs diff=lfs merge=lfs -text
 **/brisc2025/** filter=lfs diff=lfs merge=lfs -text
+models/deploy/classifier_best.pt filter=lfs diff=lfs merge=lfs -text

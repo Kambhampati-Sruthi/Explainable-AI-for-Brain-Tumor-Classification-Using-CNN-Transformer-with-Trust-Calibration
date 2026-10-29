@@ -1,14 +1,27 @@
+# Python bytecode & cache
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .ipynb_checkpoints/
+
+# Virtual environment & Environment variables
 .venv/
+venv/
+ENV/
 .env
+
+# Raw data and temporary numpy arrays
 data/raw/
 data/cache/
-models/*.pt
-models/deploy/*.onnx
-models/deploy/*.pt
-outputs/logs/
 *.npy
 *.zip
-*.pth
+
+# Logs
+outputs/logs/
+*.log
+
+# Explicitly UNIGNORE PyTorch model files (so Git tracks them)
+!*.pt
+!*.pth
+!models/*.pt
+!models/deploy/*.pt
