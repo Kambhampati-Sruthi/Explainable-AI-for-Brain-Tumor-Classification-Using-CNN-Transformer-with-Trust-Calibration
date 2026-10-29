@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: explainable-ai-for-brain-tumor
+    env: python
+    region: ohio
+    plan: free
+    buildCommand: pip install -r requirements.txt -r requirements-api.txt -r requirements-app.txt
+    startCommand: python -m uvicorn webapp.run:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9

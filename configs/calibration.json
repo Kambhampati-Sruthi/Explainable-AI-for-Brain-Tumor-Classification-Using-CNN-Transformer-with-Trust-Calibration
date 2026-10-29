@@ -6,8 +6,8 @@
       "lo": 0.0,
       "hi": 0.5,
       "n": 0,
-      "acc": NaN,
-      "conf": NaN,
+      "acc": null,
+      "conf": null,
       "label": "Insufficient data"
     },
     {
