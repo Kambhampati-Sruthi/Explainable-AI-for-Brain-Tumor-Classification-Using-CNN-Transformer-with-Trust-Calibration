@@ -11,3 +11,4 @@ models/deploy/*.pt
 outputs/logs/
 *.npy
 *.zip
+*.pth
