@@ -1,13 +1,14 @@
---find-links https://download.pytorch.org/whl/cpu/torch_stable.html
+--index-url https://download.pytorch.org/whl/cpu
 torch
 torchvision
 fastapi
 uvicorn
-python-multipart
 opencv-python-headless
 pillow
 numpy
-grad-cam
 scikit-learn
 matplotlib
 seaborn
+pydantic
+captum
+grad-cam
