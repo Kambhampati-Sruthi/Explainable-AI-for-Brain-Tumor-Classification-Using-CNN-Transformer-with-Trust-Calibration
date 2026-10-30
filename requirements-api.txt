@@ -9,3 +9,4 @@ scipy
 matplotlib
 opencv-python-headless
 tqdm
+grad-cam
