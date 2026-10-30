@@ -80,7 +80,8 @@ def create_app(engine_factory=None):
             with lock: return service.analyze_request(e, raw, method, layer, backend)
         except service.InputError as err: raise HTTPException(err.status, str(err))
         except Exception as err:
-            log.exception("analysis failed"); raise HTTPException(500, "The analysis failed on the server. See the server console for details." + debug_note(err))
+            log.exception("analysis failed")
+            raise HTTPException(500, f"Analysis failed due to error: {type(err).__name__}: {str(err)}")
 
     @app.post("/api/compare")
     def compare(file: UploadFile = File(...), layer: int = Form(8)):
