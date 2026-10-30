@@ -1,6 +1,6 @@
 """Framework-independent request handling: validate the upload, run the engine, build the JSON response.
 (No FastAPI / torch imports here, so it can be unit-tested with a stub engine.)"""
-import hashlib, io, time, uuid, warnings
+import hashlib, io, time, uuid, warnings, traceback
 from pathlib import Path
 import numpy as np
 from PIL import Image, UnidentifiedImageError
@@ -105,8 +105,14 @@ def build_response(r, info, warn, raw, ms):
 
 
 def analyze_request(engine, raw, method="Grad-CAM", layer=8, backend="lib"):
-    _check_params(engine, method, layer, backend); im, info, warn = load_image(raw); t0 = time.perf_counter()
-    r = engine.analyze(im, method, layer, backend)
+    _check_params(engine, method, layer, backend)
+    im, info, warn = load_image(raw)
+    t0 = time.perf_counter()
+    try:
+        r = engine.analyze(im, method, layer, backend)
+    except Exception as e:
+        traceback.print_exc()
+        raise InputError(f"Engine analysis crashed: {type(e).__name__}: {str(e)}", 500)
     return build_response(r, info, warn, raw, (time.perf_counter() - t0) * 1000)
 
 
