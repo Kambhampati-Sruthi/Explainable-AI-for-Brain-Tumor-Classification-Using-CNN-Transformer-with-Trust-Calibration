@@ -1,0 +1,334 @@
+Brain tumor XAI project: performance and validation metrics
+results folder: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\outputs\tables
+output folder : C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\report
+Research prototype. Not a medical device. The test set was evaluated once in the notebook; nothing here was tuned on it.
+
+============================================================================================================
+1. CLASSIFIER (EfficientNet-B0): accuracy and all scores
+============================================================================================================
+Seeds found: [0, 1, 2] | primary seed (best validation macro-F1): 0 | classes: glioma, meningioma, no_tumor, pituitary
+Confusion matrices: rows = TRUE class, columns = PREDICTED class. 'De-duplicated' removes test images that also occur in the training set.
+
+1a. Every seed on every split
+-----------------------------
+model                    split     n  accuracy          95% CI  Macro-F1  Macro prec.  Macro recall     AUC     NLL  errors
+--------  --------------------  ----  --------  --------------  --------  -----------  ------------  ------  ------  ------
+seed 0 *            Validation   998    99.20%  [98.4%, 99.6%]    0.9925       0.9928        0.9924  0.9997  0.0318       8
+seed 0 *       Test (official)  1000    98.70%  [97.8%, 99.2%]    0.9877       0.9872        0.9883  0.9995  0.0548      13
+seed 0 *  Test (de-duplicated)   899    98.55%  [97.5%, 99.2%]    0.9857       0.9843        0.9871  0.9994  0.0605      13
+seed 1              Validation   998    99.20%  [98.4%, 99.6%]    0.9925       0.9926        0.9924  0.9998  0.0285       8
+seed 1         Test (official)  1000    98.80%  [97.9%, 99.3%]    0.9896       0.9900        0.9892  0.9994  0.0483      12
+seed 1    Test (de-duplicated)   899    98.67%  [97.7%, 99.2%]    0.9875       0.9874        0.9876  0.9991  0.0529      12
+seed 2              Validation   998    98.80%  [97.9%, 99.3%]    0.9886       0.9890        0.9883  0.9997  0.0371      12
+seed 2         Test (official)  1000    98.50%  [97.5%, 99.1%]    0.9860       0.9854        0.9867  0.9997  0.0423      15
+seed 2    Test (de-duplicated)   899    98.33%  [97.3%, 99.0%]    0.9834       0.9831        0.9837  0.9996  0.0465      15
+(* = primary seed)
+
+1b. Mean +- standard deviation over seeds, and the ensemble (average of the seeds' probabilities)
+-------------------------------------------------------------------------------------------------
+model                           split          Accuracy          Macro-F1       Macro prec.      Macro recall               AUC               NLL
+---------------  --------------------  ----------------  ----------------  ----------------  ----------------  ----------------  ----------------
+mean of 3 seeds            Validation  0.9906 +- 0.0023  0.9912 +- 0.0022  0.9915 +- 0.0021  0.9910 +- 0.0024  0.9998 +- 0.0001  0.0325 +- 0.0043
+mean of 3 seeds       Test (official)  0.9867 +- 0.0015  0.9878 +- 0.0018  0.9876 +- 0.0023  0.9881 +- 0.0012  0.9995 +- 0.0002  0.0485 +- 0.0063
+mean of 3 seeds  Test (de-duplicated)  0.9852 +- 0.0017  0.9855 +- 0.0021  0.9849 +- 0.0022  0.9862 +- 0.0021  0.9994 +- 0.0002  0.0533 +- 0.0070
+ensemble              Test (official)            0.9870            0.9878            0.9871            0.9885            0.9997            0.0342
+ensemble         Test (de-duplicated)            0.9855            0.9857            0.9848            0.9866            0.9996            0.0375
+
+1c. Primary seed 0: per-class scores and confusion matrix
+---------------------------------------------------------
+
+Validation  (n=998, accuracy 99.20%, macro-F1 0.9925, errors 8)
+class       precision  recall      F1  support
+----------  ---------  ------  ------  -------
+glioma         0.9959  0.9838  0.9898      247
+meningioma     0.9754  0.9964  0.9858      278
+no tumor       1.0000  1.0000  1.0000      195
+pituitary      1.0000  0.9892  0.9946      278
+true \ predicted  glioma  meningioma  no tumor  pituitary
+----------------  ------  ----------  --------  ---------
+glioma               243           4         0          0
+meningioma             1         277         0          0
+no tumor               0           0       195          0
+pituitary              0           3         0        275
+
+Test (official)  (n=1000, accuracy 98.70%, macro-F1 0.9877, errors 13)
+class       precision  recall      F1  support
+----------  ---------  ------  ------  -------
+glioma         0.9920  0.9764  0.9841      254
+meningioma     0.9743  0.9902  0.9822      306
+no tumor       0.9859  1.0000  0.9929      140
+pituitary      0.9966  0.9867  0.9916      300
+true \ predicted  glioma  meningioma  no tumor  pituitary
+----------------  ------  ----------  --------  ---------
+glioma               248           5         0          1
+meningioma             1         303         2          0
+no tumor               0           0       140          0
+pituitary              1           3         0        296
+
+Test (de-duplicated)  (n=899, accuracy 98.55%, macro-F1 0.9857, errors 13)
+class       precision  recall      F1  support
+----------  ---------  ------  ------  -------
+glioma         0.9920  0.9764  0.9841      254
+meningioma     0.9628  0.9857  0.9741      210
+no tumor       0.9859  1.0000  0.9929      140
+pituitary      0.9966  0.9864  0.9915      295
+true \ predicted  glioma  meningioma  no tumor  pituitary
+----------------  ------  ----------  --------  ---------
+glioma               248           5         0          1
+meningioma             1         207         2          0
+no tumor               0           0       140          0
+pituitary              1           3         0        291
+
+1d. Wrong predictions of the primary model on the official test set: 13 (most confident mistakes first, up to 25)
+-----------------------------------------------------------------------------------------------------------------
+file                                     true   predicted  confidence  has twin in train?
+---------------------------------  ----------  ----------  ----------  ------------------
+brisc2025_test_00281_me_ax_t1.jpg  meningioma      glioma      0.9988                  no
+brisc2025_test_00229_gl_sa_t1.jpg      glioma  meningioma      0.9856                  no
+brisc2025_test_00060_gl_ax_t1.jpg      glioma   pituitary      0.9826                  no
+brisc2025_test_00990_pi_sa_t1.jpg   pituitary  meningioma      0.9776                  no
+brisc2025_test_00256_me_ax_t1.jpg  meningioma    no tumor      0.9643                  no
+brisc2025_test_00349_me_ax_t1.jpg  meningioma    no tumor      0.9643                  no
+brisc2025_test_00826_pi_co_t1.jpg   pituitary  meningioma      0.9035                  no
+brisc2025_test_00144_gl_co_t1.jpg      glioma  meningioma      0.8861                  no
+brisc2025_test_00974_pi_sa_t1.jpg   pituitary  meningioma      0.8721                  no
+brisc2025_test_00820_pi_ax_t1.jpg   pituitary      glioma      0.8605                  no
+brisc2025_test_00234_gl_sa_t1.jpg      glioma  meningioma      0.8212                  no
+brisc2025_test_00004_gl_ax_t1.jpg      glioma  meningioma      0.7286                  no
+brisc2025_test_00241_gl_sa_t1.jpg      glioma  meningioma      0.5898                  no
+
+============================================================================================================
+2. CALIBRATION (recomputed from the logits)
+============================================================================================================
+Temperature T is fitted on VALIDATION logits only and then applied to the test logits. ECE uses 15 equal-width confidence bins.
+model                    split          confidence      T     NLL   Brier     ECE     MCE
+--------  --------------------  ------------------  -----  ------  ------  ------  ------
+seed 0 *       Test (official)                 raw      1  0.0548  0.0239  0.0100  0.7286
+seed 0 *       Test (official)  temperature-scaled  1.318  0.0477  0.0231  0.0064  0.6276
+seed 0 *  Test (de-duplicated)                 raw      1  0.0605  0.0265  0.0115  0.7286
+seed 0 *  Test (de-duplicated)  temperature-scaled  1.318  0.0522  0.0255  0.0078  0.6276
+seed 1         Test (official)                 raw      1  0.0483  0.0211  0.0098  0.6031
+seed 1         Test (official)  temperature-scaled  1.413  0.0410  0.0201  0.0098  0.6239
+seed 1    Test (de-duplicated)                 raw      1  0.0529  0.0232  0.0108  0.6031
+seed 1    Test (de-duplicated)  temperature-scaled  1.413  0.0442  0.0218  0.0100  0.6239
+seed 2         Test (official)                 raw      1  0.0423  0.0217  0.0108  0.4923
+seed 2         Test (official)  temperature-scaled  1.311  0.0384  0.0206  0.0080  0.4948
+seed 2    Test (de-duplicated)                 raw      1  0.0465  0.0240  0.0120  0.4923
+seed 2    Test (de-duplicated)  temperature-scaled  1.311  0.0418  0.0227  0.0090  0.4948
+
+T above 1 means the raw network was over-confident. Scaling never changes the predicted class, only the confidence.
+Primary seed 0, official test, raw: ECE 0.0100  bootstrap 95% [0.0050, 0.0171]
+Primary seed 0, official test, temperature-scaled: ECE 0.0064  bootstrap 95% [0.0041, 0.0143]
+Note: at this accuracy almost every image falls in the top confidence bin, so ECE rests on a few images; read NLL and the bootstrap interval, not ECE alone.
+
+Risk-coverage (primary, temperature-scaled): keep 90%: error 0.0011 | keep 95%: error 0.0032 | keep 99%: error 0.0101 | keep 100%: error 0.0130
+
+============================================================================================================
+3. SEGMENTATION (U-Net++): tumor images only, primary model, test set
+============================================================================================================
+Dice = 2|A and B| / (|A|+|B|); IoU = |A and B| / |A or B|; HD95 = 95th-percentile boundary distance in pixels at 256 px; 'missed' = the model predicted no tumor pixel.
+view                  n    Dice  95% CI (bootstrap)     IoU  precision  recall  HD95 median  missed
+------------------  ---  ------  ------------------  ------  ---------  ------  -----------  ------
+official test       860  0.8685    [0.8561, 0.8810]  0.8007     0.8800  0.8903       3.1844       7
+de-duplicated test  759  0.8577    [0.8434, 0.8703]  0.7865     0.8686  0.8838       3.3618       7
+
+Per tumor class
+---------------
+view                     class    n    Dice            95% CI     IoU  HD95 median  missed
+------------------  ----------  ---  ------  ----------------  ------  -----------  ------
+official test           glioma  254  0.7638  [0.7318, 0.7956]  0.6761       7.6429       6
+official test       meningioma  306  0.9440  [0.9376, 0.9503]  0.8990       2.2361       0
+official test        pituitary  300  0.8801  [0.8654, 0.8943]  0.8058       3.0081       1
+de-duplicated test      glioma  254  0.7638  [0.7311, 0.7964]  0.6761       7.6429       6
+de-duplicated test  meningioma  210  0.9414  [0.9322, 0.9490]  0.8951       2.0944       0
+de-duplicated test   pituitary  295  0.8790  [0.8623, 0.8943]  0.8043       3.0041       1
+
+============================================================================================================
+4. TRUST LEVELS versus real classification errors (test set)
+============================================================================================================
+Rule: LOW if calibrated confidence < 0.80 or classifier and segmenter disagree; MEDIUM if confidence < 0.95 or the heat-map lies mostly outside the region; else HIGH.
+test view  trust level  images  errors  error rate  Wilson 95% interval
+---------  -----------  ------  ------  ----------  -------------------
+official          HIGH     225       0       0.00%         [0.0%, 1.7%]
+official        MEDIUM     750       6       0.80%         [0.4%, 1.7%]
+official           LOW      25       7      28.00%       [14.3%, 47.6%]
+dedup             HIGH     174       0       0.00%         [0.0%, 2.2%]
+dedup           MEDIUM     702       6       0.85%         [0.4%, 1.9%]
+dedup              LOW      23       7      30.43%       [15.6%, 50.9%]
+Classifier and segmenter agree on 99.0% of test images. The total number of errors is small, so these intervals are wide.
+
+============================================================================================================
+5. TRAINING HISTORY and the other result tables saved by the notebook
+============================================================================================================
+run                   epochs run        task  selection metric  best value  best epoch     phase  last train loss
+--------------------  ----------  ----------  ----------------  ----------  ----------  --------  ---------------
+abl_base_s0                   14  classifier      val_macro_f1      0.9925          10  finetune           0.0368
+abl_base_s1                   10  classifier      val_macro_f1      0.9867           9  finetune           0.0656
+abl_base_s2                   14  classifier      val_macro_f1      0.9897          11  finetune           0.0480
+abl_class_wt_s0               14  classifier      val_macro_f1      0.9934          10  finetune           0.0366
+abl_class_wt_s1               14  classifier      val_macro_f1      0.9888          14  finetune           0.0438
+abl_class_wt_s2               14  classifier      val_macro_f1      0.9897          11  finetune           0.0472
+abl_ds_norm_s0                13  classifier      val_macro_f1      0.9884          10  finetune           0.0413
+abl_ds_norm_s1                14  classifier      val_macro_f1      0.9906          12  finetune           0.0422
+abl_ds_norm_s2                12  classifier      val_macro_f1      0.9878           9  finetune           0.0409
+abl_light_aug_s0              14  classifier      val_macro_f1      0.9924          11  finetune           0.0177
+abl_light_aug_s1              14  classifier      val_macro_f1      0.9923          13  finetune           0.0246
+abl_light_aug_s2              14  classifier      val_macro_f1      0.9932          13  finetune           0.0196
+abl_scratch_s0                12  classifier      val_macro_f1      0.9725          11  finetune           0.1807
+abl_scratch_s1                12  classifier      val_macro_f1      0.9759          12  finetune           0.1436
+abl_scratch_s2                12  classifier      val_macro_f1      0.9845          11  finetune           0.1406
+abl_stretch_s0                14  classifier      val_macro_f1      0.9905          13  finetune           0.0398
+abl_stretch_s1                14  classifier      val_macro_f1      0.9925          11  finetune           0.0406
+abl_stretch_s2                14  classifier      val_macro_f1      0.9895          13  finetune           0.0461
+effb0_base_imnet_s42          19  classifier      val_macro_f1      0.9913          13  finetune           0.0230
+final_s0                      18  classifier      val_macro_f1      0.9925          12  finetune           0.0178
+final_s1                      19  classifier      val_macro_f1      0.9934          17  finetune           0.0162
+final_s2                      17  classifier      val_macro_f1      0.9895          14  finetune           0.0279
+seg_base_s42                  32   segmenter          val_dice      0.8772          30  finetune           0.1189
+segabl_base_s0                16   segmenter          val_dice      0.8668          15  finetune           0.1522
+segabl_base_s1                16   segmenter          val_dice      0.8654          14  finetune           0.1501
+segabl_base_s2                16   segmenter          val_dice      0.8607          16  finetune           0.1544
+segabl_dice_focal_s0          16   segmenter          val_dice      0.8590          16  finetune           0.1033
+segabl_dice_focal_s1          16   segmenter          val_dice      0.8590          13  finetune           0.0996
+segabl_dice_focal_s2          16   segmenter          val_dice      0.8570          14  finetune           0.1027
+segabl_negatives_s0           16   segmenter          val_dice      0.8600          15  finetune           0.1267
+segabl_negatives_s1           16   segmenter          val_dice      0.8629          15  finetune           0.1224
+segabl_negatives_s2           16   segmenter          val_dice      0.8652          14  finetune           0.1234
+segabl_partial_ft_s0          16   segmenter          val_dice      0.8499          13  finetune           0.1589
+segabl_partial_ft_s1          16   segmenter          val_dice      0.8474          14  finetune           0.1578
+segabl_partial_ft_s2          16   segmenter          val_dice      0.8472          15  finetune           0.1629
+segabl_unet_s0                16   segmenter          val_dice      0.8617          15  finetune           0.1569
+segabl_unet_s1                16   segmenter          val_dice      0.8634          13  finetune           0.1535
+segabl_unet_s2                16   segmenter          val_dice      0.8617          15  finetune           0.1558
+segfinal_s0                   40   segmenter          val_dice      0.8738          34  finetune           0.0950
+segfinal_s1                   35   segmenter          val_dice      0.8724          27  finetune           0.0937
+segfinal_s2                   42   segmenter          val_dice      0.8767          34  finetune           0.0949
+
+Notebook table 3: classifier test results   [table_3_test_results.csv]
+----------------------------------------------------------------------
+view                                 metric    mean     std     min     max
+--------------------------  ---------------  ------  ------  ------  ------
+official                           accuracy  0.9867  0.0015  0.9850  0.9880
+official                           macro_f1  0.9878  0.0018  0.9860  0.9896
+official                    macro_precision  0.9876  0.0023  0.9854  0.9900
+official                       macro_recall  0.9881  0.0012  0.9867  0.9892
+official                            auc_ovr  0.9995  0.0002  0.9994  0.9997
+official                                nll  0.0485  0.0063  0.0423  0.0548
+official (3-seed ensemble)         accuracy  0.9870                        
+official (3-seed ensemble)         macro_f1  0.9878                        
+official (3-seed ensemble)          auc_ovr  0.9997                        
+official (3-seed ensemble)              nll  0.0342                        
+dedup                              accuracy  0.9852  0.0017  0.9833  0.9867
+dedup                              macro_f1  0.9855  0.0021  0.9834  0.9875
+dedup                       macro_precision  0.9849  0.0022  0.9831  0.9874
+dedup                          macro_recall  0.9862  0.0021  0.9837  0.9876
+dedup                               auc_ovr  0.9994  0.0002  0.9991  0.9996
+dedup                                   nll  0.0533  0.0070  0.0465  0.0605
+dedup (3-seed ensemble)            accuracy  0.9855                        
+dedup (3-seed ensemble)            macro_f1  0.9857                        
+dedup (3-seed ensemble)             auc_ovr  0.9996                        
+dedup (3-seed ensemble)                 nll  0.0375                        
+
+Notebook table 4: segmentation test results   [table_4_test_results.csv]
+------------------------------------------------------------------------
+model            view    n    dice  dice lo  dice hi     iou  precision  recall  hd95 median  missed
+-----------  --------  ---  ------  -------  -------  ------  ---------  ------  -----------  ------
+segfinal_s0  official  860  0.8702   0.8586   0.8819  0.8006     0.8761  0.8966       3.6056       5
+segfinal_s0     dedup  759  0.8588   0.8465   0.8708  0.7851     0.8632  0.8905       3.7633       5
+segfinal_s1  official  860  0.8736   0.8615   0.8852  0.8049     0.8778  0.9023       3.4172       6
+segfinal_s1     dedup  759  0.8631   0.8507   0.8750  0.7906     0.8664  0.8964       3.6056       6
+segfinal_s2  official  860  0.8685   0.8561   0.8810  0.8007     0.8800  0.8903       3.1844       7
+segfinal_s2     dedup  759  0.8577   0.8443   0.8704  0.7865     0.8686  0.8838       3.3618       7
+ensemble     official  860  0.8748   0.8628   0.8865  0.8073     0.8839  0.8982       3.1623       7
+ensemble        dedup  759  0.8642   0.8518   0.8763  0.7931     0.8725  0.8922       3.1623       7
+
+Notebook table 6: calibration   [table_6_calibration.csv]
+---------------------------------------------------------
+scaling     model      view     n     acc     nll   brier     ECE  ECE lo  ECE hi     MCE
+-------  --------  --------  ----  ------  ------  ------  ------  ------  ------  ------
+raw       primary  official  1000  0.9870  0.0548  0.0239  0.0100  0.0050  0.0174  0.7286
+raw       primary     dedup   899  0.9855  0.0605  0.0265  0.0115  0.0055  0.0197  0.7286
+ts        primary  official  1000  0.9870  0.0477  0.0231  0.0064  0.0040  0.0142  0.6276
+ts        primary     dedup   899  0.9855  0.0522  0.0255  0.0078  0.0046  0.0169  0.6276
+raw      ensemble  official  1000  0.9870  0.0342  0.0165  0.0056  0.0041  0.0121  0.5120
+raw      ensemble     dedup   899  0.9855  0.0375  0.0183  0.0060  0.0044  0.0135  0.5120
+ts       ensemble  official  1000  0.9880  0.0335  0.0162  0.0082  0.0062  0.0144  0.3687
+ts       ensemble     dedup   899  0.9867  0.0363  0.0179  0.0082  0.0061  0.0149  0.3687
+
+Format-shift test (does the model rely on file format?)   [final_format_shift_test.csv]
+---------------------------------------------------------------------------------------
+seed  intervention    n     acc  nt rate  nt k
+----  ------------  ---  ------  -------  ----
+0         identity  740  0.9824   0.0027     2
+0           mirror  740  0.9811   0.0027     2
+0         zoom_out  740  0.9757   0.0027     2
+0        side_crop  740  0.9797   0.0041     3
+0          squeeze  740  0.9662   0.0054     4
+1         identity  740  0.9838   0.0000     0
+1           mirror  740  0.9838   0.0000     0
+1         zoom_out  740  0.9716   0.0068     5
+1        side_crop  740  0.9784   0.0014     1
+1          squeeze  740  0.9784   0.0000     0
+2         identity  740  0.9797   0.0027     2
+2           mirror  740  0.9838   0.0027     2
+2         zoom_out  740  0.9662   0.0041     3
+2        side_crop  740  0.9797   0.0041     3
+2          squeeze  740  0.9689   0.0027     2
+
+Classifier cost   [table_3_efficiency.csv]
+------------------------------------------
+batch  precision  ms per batch  ms per image  images per s
+-----  ---------  ------------  ------------  ------------
+1           fp32        8.9000        8.9000      112.3000
+1           fp16        9.7600        9.7600      102.5000
+32          fp32       43.1700        1.3500      741.2000
+32          fp16       23.1700        0.7200     1381.3000
+
+Segmenter cost   [table_4_efficiency.csv]
+-----------------------------------------
+params M  GFLOPs 256  ms per img gpu fp16 bs16  ms per img cpu bs1
+--------  ----------  ------------------------  ------------------
+6.7553       13.8450                    3.5200            147.8629
+
+Segmentation ablation runs   [seg_ablation_results.csv]
+-------------------------------------------------------
+arm         seed  best epoch  minutes  val dice  val iou  val precision  val recall  val hd95 median  val hd95 mean  missed  neg any  neg gt50  neg median px  params M
+----------  ----  ----------  -------  --------  -------  -------------  ----------  ---------------  -------------  ------  -------  --------  -------------  --------
+base           0          15  10.7000    0.8668   0.7927         0.8910      0.8757           4.0369         9.2262       1  63.0769   56.9231       128.0000    6.7553
+base           1          14  10.9000    0.8654   0.7906         0.8944      0.8729           4.2426         9.2212       3  62.5641   56.9231        93.0000    6.7553
+base           2          16  10.9000    0.8607   0.7876         0.8903      0.8686           4.0000         9.3861       4  63.0769   57.9487       158.0000    6.7553
+unet           0          15   6.5000    0.8617   0.7862         0.8820      0.8760           4.2361         9.6516       3  56.4103   50.2564        52.0000    5.8346
+unet           1          13   6.5000    0.8634   0.7880         0.8892      0.8716           4.1231         9.2462       2  55.8974   47.1795        14.0000    5.8346
+unet           2          15   6.5000    0.8617   0.7866         0.8896      0.8665           4.4500         9.3506       1  60.0000   54.3590       106.0000    5.8346
+dice_focal     0          16  11.0000    0.8590   0.7840         0.8911      0.8657           4.1373        10.0124       4  63.0769   53.8462        90.0000    6.7553
+dice_focal     1          13  11.0000    0.8590   0.7839         0.8806      0.8755           4.2713        10.1242       4  63.5897   58.9744       137.0000    6.7553
+dice_focal     2          14  10.9000    0.8570   0.7823         0.8894      0.8610           4.1962         9.5776       6  55.8974   51.2821        58.0000    6.7553
+partial_ft     0          13   8.9000    0.8499   0.7742         0.8807      0.8609           4.3154        10.8103       8  63.0769   52.3077        73.0000    6.7553
+partial_ft     1          14   9.0000    0.8474   0.7719         0.8874      0.8517           4.4496        10.5832      10  64.6154   54.3590        89.0000    6.7553
+partial_ft     2          15   8.9000    0.8472   0.7715         0.8880      0.8507           4.3739        11.0373      12  71.2821   66.1538       166.0000    6.7553
+negatives      0          15  13.8000    0.8600   0.7857         0.8853      0.8708           4.1672         9.3603       6   0.0000    0.0000         0.0000    6.7553
+negatives      1          15  13.8000    0.8629   0.7870         0.8886      0.8729           4.1495         9.7359       2   0.0000    0.0000         0.0000    6.7553
+negatives      2          14  13.7000    0.8652   0.7892         0.8779      0.8854           4.2426        10.1178       2   0.5128    0.5128         0.0000    6.7553
+
+Classification ablation runs   [ablation_results.csv]
+-----------------------------------------------------
+arm        seed  best epoch  minutes  val macro f1  val acc  val nll  val auc  acc identity  nt identity  n shift  acc mirror  nt mirror  acc zoom out  nt zoom out  acc side crop  nt side crop  acc squeeze  nt squeeze
+---------  ----  ----------  -------  ------------  -------  -------  -------  ------------  -----------  -------  ----------  ---------  ------------  -----------  -------------  ------------  -----------  ----------
+base          0          10   3.6000        0.9925   0.9920   0.0275   0.9998        0.9897       0.0000      774      0.9858     0.0000        0.9755       0.0013         0.9742        0.0000       0.9509      0.0065
+base          1           6   2.6000        0.9859   0.9850   0.0483   0.9993        0.9819       0.0000      774      0.9819     0.0000        0.9599       0.0026         0.9703        0.0013       0.9173      0.0039
+base          2          11   3.7000        0.9897   0.9890   0.0344   0.9997        0.9858       0.0000      774      0.9845     0.0000        0.9716       0.0026         0.9780        0.0000       0.9457      0.0039
+ds_norm       0           9   3.4000        0.9876   0.9870   0.0330   0.9997        0.9832       0.0000      774      0.9858     0.0000        0.9716       0.0013         0.9716        0.0013       0.9548      0.0026
+ds_norm       1          12   3.6000        0.9906   0.9900   0.0323   0.9996        0.9871       0.0000      774      0.9884     0.0000        0.9729       0.0013         0.9871        0.0000       0.9419      0.0013
+ds_norm       2           8   3.1000        0.9868   0.9860   0.0363   0.9996        0.9819       0.0000      774      0.9832     0.0000        0.9716       0.0013         0.9677        0.0013       0.9432      0.0013
+stretch       0          10   3.7000        0.9896   0.9890   0.0303   0.9998        0.9870       0.0000      772      0.9870     0.0000        0.9793       0.0026         0.9832        0.0000       0.9585      0.0026
+stretch       1          11   3.7000        0.9925   0.9920   0.0268   0.9998        0.9909       0.0000      772      0.9883     0.0000        0.9728       0.0000         0.9819        0.0000       0.9417      0.0013
+stretch       2          10   3.6000        0.9894   0.9890   0.0302   0.9998        0.9883       0.0013      772      0.9870     0.0000        0.9689       0.0013         0.9819        0.0000       0.9469      0.0013
+class_wt      0          10   3.6000        0.9934   0.9930   0.0243   0.9998        0.9910       0.0000      774      0.9884     0.0000        0.9780       0.0013         0.9767        0.0000       0.9535      0.0052
+class_wt      1          13   3.6000        0.9886   0.9880   0.0363   0.9996        0.9858       0.0000      774      0.9897     0.0000        0.9703       0.0013         0.9767        0.0013       0.9406      0.0052
+class_wt      2          11   3.6000        0.9897   0.9890   0.0322   0.9997        0.9858       0.0000      774      0.9845     0.0000        0.9703       0.0026         0.9806        0.0000       0.9457      0.0039
+light_aug     0          10   3.5000        0.9915   0.9910   0.0404   0.9996        0.9884       0.0000      774      0.9858     0.0000        0.9328       0.0013         0.9845        0.0000       0.9328      0.0000
+light_aug     1          13   3.4000        0.9923   0.9920   0.0320   0.9998        0.9910       0.0000      774      0.9871     0.0000        0.9406       0.0026         0.9780        0.0000       0.9238      0.0039
+light_aug     2          12   3.4000        0.9924   0.9920   0.0400   0.9994        0.9897       0.0000      774      0.9922     0.0000        0.9496       0.0039         0.9832        0.0000       0.9406      0.0039
+scratch       0          11   3.3000        0.9725   0.9709   0.0911   0.9983        0.9664       0.0013      774      0.9742     0.0026        0.9522       0.0013         0.9238        0.0168       0.7390      0.0245
+scratch       1          12   3.2000        0.9759   0.9749   0.0786   0.9984        0.9703       0.0026      774      0.9664     0.0039        0.9432       0.0026         0.9212        0.0181       0.7416      0.0827
+scratch       2          11   3.3000        0.9845   0.9840   0.0590   0.9992        0.9793       0.0039      774      0.9690     0.0039        0.9522       0.0026         0.9496        0.0026       0.7984      0.0258

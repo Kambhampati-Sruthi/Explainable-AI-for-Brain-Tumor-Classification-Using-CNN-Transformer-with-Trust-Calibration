@@ -1,0 +1,7 @@
+view,level,n,errors,error_rate,wilson_95
+official,HIGH,225,0,0.00%,"[0.0%, 1.7%]"
+official,MEDIUM,750,6,0.80%,"[0.4%, 1.7%]"
+official,LOW,25,7,28.00%,"[14.3%, 47.6%]"
+dedup,HIGH,174,0,0.00%,"[0.0%, 2.2%]"
+dedup,MEDIUM,702,6,0.85%,"[0.4%, 1.9%]"
+dedup,LOW,23,7,30.43%,"[15.6%, 50.9%]"
