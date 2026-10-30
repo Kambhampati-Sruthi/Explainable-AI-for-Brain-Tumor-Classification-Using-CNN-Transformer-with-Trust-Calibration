@@ -5,7 +5,7 @@ RUN pip install --no-cache-dir torch torchvision --index-url https://download.py
  && pip install --no-cache-dir -r requirements-api.txt
 COPY src ./src
 COPY api ./api
-COPY models/deploy ./models/deploy
+COPY models ./models
 COPY configs ./configs
 ENV DEPLOY_DIR=/app/models/deploy CLS_CKPT=/app/models/deploy/classifier_best.pt PORT=8000
 EXPOSE 8000
