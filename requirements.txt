@@ -1,14 +1,11 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch
-torchvision
+onnxruntime
 numpy
 pillow
 opencv-python-headless
 scipy
 matplotlib
 tqdm
-grad-cam
 fastapi
 uvicorn
 python-multipart
-grad-cam
