@@ -112,9 +112,7 @@ def analyze_request(engine, raw, method="Grad-CAM", layer=8, backend="lib"):
         r = engine.analyze(im, method, layer, backend)
     except Exception as e:
         traceback.print_exc()
-        # FIX: Include the actual exception string in the HTTP 500 response so it is visible in the frontend instead of generic failure
-        err_msg = f"{type(e).__name__}: {str(e)}"
-        raise InputError(f"Engine analysis crashed: {err_msg}", 500)
+        raise InputError(f"Engine analysis crashed: {type(e).__name__}: {str(e)}", 500)
     return build_response(r, info, warn, raw, (time.perf_counter() - t0) * 1000)
 
 
