@@ -2,14 +2,11 @@ fastapi
 uvicorn[standard]
 python-multipart
 pydantic
-numpy
+numpy<2.0.0
 pillow
 scipy
 pandas
 scikit-learn
 matplotlib
 opencv-python-headless
-tqdm
-grad-cam
-captum
 onnxruntime

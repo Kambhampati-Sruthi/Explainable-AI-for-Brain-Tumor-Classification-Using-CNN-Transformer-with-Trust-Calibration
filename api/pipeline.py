@@ -1,4 +1,4 @@
-"""Local pipeline: YOUR trained checkpoints -> class + calibrated confidence + tumor mask + Grad-CAM (library) + trust level."""
+"""Local pipeline: YOUR trained checkpoints / ONNX models -> class + calibrated confidence + tumor mask + Grad-CAM (library) + trust level."""
 import json, sys
 from pathlib import Path
 import numpy as np
@@ -10,9 +10,13 @@ from src.classification.model import build_efficientnet_b0
 from src.segmentation.model import UNetPlusPlus, EffB1Encoder
 from api import core
 
-# name shown in the UI -> class in the `grad-cam` library (pip install grad-cam)
-#CAM_METHODS = {"Grad-CAM": "GradCAM", "Grad-CAM++": "GradCAMPlusPlus", "HiRes-CAM": "HiResCAM", "XGrad-CAM": "XGradCAM",
-               #"Layer-CAM": "LayerCAM", "Eigen-CAM": "EigenCAM", "Score-CAM (slow)": "ScoreCAM"}
+# Check if onnxruntime is available
+try:
+    import onnxruntime as ort
+    HAS_ONNX = True
+except ImportError:
+    HAS_ONNX = False
+
 CAM_METHODS = {"Grad-CAM": "GradCAM", "Grad-CAM++": "GradCAMPlusPlus", "Layer-CAM": "LayerCAM"}
 LAYERS = {3: "features[3] (early, fine)", 5: "features[5] (middle)", 8: "features[8] (last conv, 8x8; used for trust)"}
 
@@ -22,17 +26,43 @@ class BrainTumorXAI:
     def __init__(self, cls_ckpt=None, seg_ckpt=None, deploy_dir=None, device=None):
         self.deploy = Path(deploy_dir or ROOT / "models" / "deploy"); self.cfg = core.load_cfg(self.deploy)
         self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu")); self.classes = self.cfg["classes"]
+        
+        # Check for ONNX files first (ideal for Render free tier deployment)
+        self.use_onnx = False
+        onnx_cls_path = self.deploy / "classifier.onnx"
+        onnx_seg_path = self.deploy / "segmenter.onnx"
+
+        if HAS_ONNX and onnx_cls_path.exists() and onnx_seg_path.exists():
+            try:
+                opts = ort.SessionOptions()
+                opts.intra_op_num_threads = 1
+                opts.inter_op_num_threads = 1
+                self.cls_session = ort.InferenceSession(str(onnx_cls_path), providers=["CPUExecutionProvider"], sess_options=opts)
+                self.seg_session = ort.InferenceSession(str(onnx_seg_path), providers=["CPUExecutionProvider"], sess_options=opts)
+                self.use_onnx = True
+            except Exception:
+                self.use_onnx = False
+
+        # Fallback/Local PyTorch checkpoints initialization
         cls_ckpt = Path(cls_ckpt or self.deploy / "classifier_best.pt")
         if seg_ckpt is None:
             prim = json.load(open(ROOT / "configs" / "segmentation_primary.json"))["primary"]; seg_ckpt = ROOT / "models" / f"{prim}_best.pt"
-        for p in (cls_ckpt, Path(seg_ckpt)):
-            if not Path(p).exists(): raise FileNotFoundError(f"{p} not found - copy your downloaded checkpoint there")
-        ck = torch.load(cls_ckpt, map_location=self.device, weights_only=False)
-        self.cls = build_efficientnet_b0(pretrained=False).to(self.device); self.cls.load_state_dict(ck["model"]); self.cls.eval()
-        cs = torch.load(seg_ckpt, map_location=self.device, weights_only=False); c = cs.get("cfg", {})
-        self.seg = UNetPlusPlus(pretrained=False, nested=c.get("nested", True))
-        if c.get("variant", "b0") == "b1": self.seg.encoder = EffB1Encoder(pretrained=False)
-        self.seg.load_state_dict(cs["model"]); self.seg = self.seg.to(self.device).eval()
+            
+        if not self.use_onnx:
+            for p in (cls_ckpt, Path(seg_ckpt)):
+                if not Path(p).exists(): raise FileNotFoundError(f"{p} not found - copy your downloaded checkpoint there")
+            ck = torch.load(cls_ckpt, map_location=self.device, weights_only=False)
+            self.cls = build_efficientnet_b0(pretrained=False).to(self.device); self.cls.load_state_dict(ck["model"]); self.cls.eval()
+            cs = torch.load(seg_ckpt, map_location=self.device, weights_only=False); c = cs.get("cfg", {})
+            self.seg = UNetPlusPlus(pretrained=False, nested=c.get("nested", True))
+            if c.get("variant", "b0") == "b1": self.seg.encoder = EffB1Encoder(pretrained=False)
+            self.seg.load_state_dict(cs["model"]); self.seg = self.seg.to(self.device).eval()
+        else:
+            # Still load PyTorch cls model on CPU for pytorch-grad-cam hooks if needed locally, or use dummy handles
+            ck = torch.load(cls_ckpt, map_location=self.device, weights_only=False) if Path(cls_ckpt).exists() else None
+            self.cls = build_efficientnet_b0(pretrained=False).to(self.device)
+            if ck: self.cls.load_state_dict(ck["model"])
+            self.cls.eval()
 
     # ---------- explanations ----------
     def _own_cam(self, x, k, layer):
@@ -61,12 +91,23 @@ class BrainTumorXAI:
 
     # ---------- full analysis ----------
     def _infer(self, im: Image.Image):
-        """Classifier + segmenter forward pass shared by analyze() and compare()."""
+        """Classifier + segmenter forward pass shared by analyze() and compare(). Supports both ONNX and PyTorch."""
         cfg = self.cfg; pr = core.prepare(im, cfg)
         xc, xs = torch.from_numpy(pr["xc"]).to(self.device), torch.from_numpy(pr["xs"]).to(self.device)
+        
         with torch.no_grad():
-            z_raw = self.cls(xc)[0].float().cpu().numpy()
-            pm = torch.sigmoid(self.seg(xs))[0, 0].float().cpu().numpy()
+            if self.use_onnx:
+                # Run inference via ONNX Runtime to minimize RAM and save CPU cycles on Render
+                cls_input_name = self.cls_session.get_inputs()[0].name
+                seg_input_name = self.seg_session.get_inputs()[0].name
+                
+                z_raw = self.cls_session.run(None, {cls_input_name: xc.cpu().numpy()})[0][0]
+                pm_raw = self.seg_session.run(None, {seg_input_name: xs.cpu().numpy()})[0][0, 0]
+                pm = 1 / (1 + np.exp(-pm_raw)) # apply sigmoid
+            else:
+                z_raw = self.cls(xc)[0].float().cpu().numpy()
+                pm = torch.sigmoid(self.seg(xs))[0, 0].float().cpu().numpy()
+                
         sm = lambda z: (lambda e: e / e.sum())(np.exp(z - z.max()))
         p, p_raw = sm(z_raw / cfg["temperature"]), sm(z_raw)                          # calibrated (temperature-scaled) and raw probabilities
         k = int(p.argmax()); cls = self.classes[k]

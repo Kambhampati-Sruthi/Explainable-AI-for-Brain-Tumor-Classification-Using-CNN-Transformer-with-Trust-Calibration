@@ -17,9 +17,20 @@ log = logging.getLogger("btx"); STATIC = Path(__file__).parent / "static"
 
 # Packages / project modules that are imported LAZILY, i.e. only when the first analysis runs. If one is missing on the server the models
 # still load (the page says "ready") and then every upload fails with "analysis failed". Checking them at start-up shows the cause at once.
-RUNTIME_IMPORTS = ["cv2", "PIL", "scipy.ndimage", "tqdm", "matplotlib.backends.backend_agg", "pytorch_grad_cam", "torchvision",
-                   "src.preprocessing.cache", "src.xai.methods"]
-
+#RUNTIME_IMPORTS = ["cv2", "PIL", "scipy.ndimage", "tqdm", "matplotlib.backends.backend_agg", "pytorch_grad_cam", "torchvision",
+ #                  "src.preprocessing.cache", "src.xai.methods"]
+RUNTIME_IMPORTS = [
+    "cv2",
+    "PIL",
+    "scipy.ndimage",
+    "tqdm",
+    "matplotlib.backends.backend_agg",
+    "pytorch_grad_cam",
+    "torchvision",
+    "onnxruntime",
+    "src.preprocessing.cache",
+    "src.xai.methods",
+]
 
 def runtime_problems():
     bad = []
