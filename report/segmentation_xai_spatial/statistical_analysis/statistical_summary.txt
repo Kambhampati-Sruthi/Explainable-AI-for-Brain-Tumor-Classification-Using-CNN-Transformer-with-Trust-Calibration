@@ -1,0 +1,68 @@
+STRATIFIED SEGMENTATION XAI STATISTICAL ANALYSIS
+=================================================================
+
+Input CSV: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\report\segmentation_xai_spatial\stratified_xai_metrics.csv
+Total input rows: 78
+Unique cases: 39
+
+CASE-LEVEL DICE SUMMARY
+-----------------------------------------------------------------
+Mean Dice: 0.618817
+Median Dice: 0.699301
+SD Dice: 0.330771
+
+TARGET COUNTS
+-----------------------------------------------------------------
+ground_truth_oracle_OFFLINE: 39 cases
+predicted_region: 39 cases
+
+DICE GROUP COUNTS
+-----------------------------------------------------------------
+high: 12
+medium: 12
+low: 9
+zero: 6
+
+DATA COMPLETENESS
+-----------------------------------------------------------------
+Status counts: {'ok': 76, 'empty ROI; skipped': 2}
+Cases missing predicted row: 0
+Cases missing oracle row: 0
+
+Missing metric values:
+Grad-CAM: 2
+IG positive: 2
+Occlusion positive: 2
+
+DESCRIPTIVE XAI RESULTS
+-----------------------------------------------------------------
+predicted_region | Grad-CAM | n=37 | mean=0.5427 | 95% CI=[0.5058, 0.5802]
+predicted_region | IG positive | n=37 | mean=0.6457 | 95% CI=[0.6357, 0.6557]
+predicted_region | Occlusion positive | n=37 | mean=0.9753 | 95% CI=[0.9554, 0.9907]
+ground_truth_oracle_OFFLINE | Grad-CAM | n=39 | mean=0.5884 | 95% CI=[0.5485, 0.6297]
+ground_truth_oracle_OFFLINE | IG positive | n=39 | mean=0.6623 | 95% CI=[0.6511, 0.6753]
+ground_truth_oracle_OFFLINE | Occlusion positive | n=39 | mean=0.9672 | 95% CI=[0.9236, 0.9934]
+
+PAIRED METHOD COMPARISONS
+-----------------------------------------------------------------
+predicted_region | IG positive minus Grad-CAM | n=37 | mean difference=0.1030 | 95% CI=[0.0619, 0.1433] | Holm p=0.00010
+predicted_region | Occlusion positive minus Grad-CAM | n=37 | mean difference=0.4326 | 95% CI=[0.3902, 0.4728] | Holm p=0.00010
+ground_truth_oracle_OFFLINE | IG positive minus Grad-CAM | n=39 | mean difference=0.0740 | 95% CI=[0.0303, 0.1157] | Holm p=0.00215
+ground_truth_oracle_OFFLINE | Occlusion positive minus Grad-CAM | n=39 | mean difference=0.3789 | 95% CI=[0.3224, 0.4315] | Holm p=0.00010
+
+PREDICTED VS ORACLE COMPARISONS
+-----------------------------------------------------------------
+Grad-CAM | predicted minus oracle=-0.0369 | 95% CI=[-0.0780, 0.0023] | Holm p=0.17879
+IG positive | predicted minus oracle=-0.0146 | 95% CI=[-0.0278, -0.0042] | Holm p=0.02580
+Occlusion positive | predicted minus oracle=0.0078 | 95% CI=[-0.0235, 0.0528] | Holm p=0.88216
+
+INTERPRETATION AND LIMITATIONS
+-----------------------------------------------------------------
+1. The independent sampling unit is the case. Repeated target rows are not treated as independent cases.
+2. Predicted-region and ground-truth-oracle comparisons are paired by case.
+3. Oracle explanations use ground-truth regions and are offline analyses, not deployment-time explanations.
+4. High spatial ranking AUC does not establish explanation faithfulness, model correctness, or clinical validity.
+5. Absolute attribution scores combine positive and negative contributions. They do not imply that all attribution supports tumour prediction.
+6. The 39 cases are a stratified selected sample, not a replacement for the full 860-image segmentation evaluation.
+7. Class labels are inferred from filenames and should be verified against dataset metadata before publication.
+8. Bootstrap intervals and permutation tests quantify uncertainty within this selected sample; external validation is still required.

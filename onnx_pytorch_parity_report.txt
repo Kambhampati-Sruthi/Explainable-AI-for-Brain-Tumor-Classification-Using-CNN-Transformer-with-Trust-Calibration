@@ -1,0 +1,10 @@
+ONNX/PyTorch parity check
+Image: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\dataset\brisc2025\classification_task\test\glioma\brisc2025_test_00007_gl_ax_t1.jpg
+Classifier logits allclose: True
+Segmenter logits allclose: False
+Temperature: 1.3182396102445122
+PyTorch class: glioma
+ONNX class: glioma
+Classifier probability max abs difference: 1.9495827985327452e-07
+Segmentation mask pixel agreement: 100.0
+See VS Code terminal for full numerical differences.

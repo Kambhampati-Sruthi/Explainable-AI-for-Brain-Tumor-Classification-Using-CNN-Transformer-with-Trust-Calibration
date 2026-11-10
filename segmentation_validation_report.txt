@@ -1,0 +1,13 @@
+BRISC2025 SEGMENTATION VALIDATION
+Image: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\dataset\brisc2025\segmentation_task\test\images\brisc2025_test_00008_gl_ax_t1.jpg
+Ground truth: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\dataset\brisc2025\segmentation_task\test\masks\brisc2025_test_00008_gl_ax_t1.png
+Checkpoint: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\models\segfinal_s2_best.pt
+ONNX: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\models\deploy\segmenter.onnx
+Threshold: 0.5
+Logits allclose (rtol=1e-3, atol=1e-4): False
+Binary mask pixel agreement: 1.00000000
+PyTorch metrics: {'dice': 0.9655891553701773, 'iou': 0.9334677419354839, 'precision': 0.9625779625779626, 'recall': 0.9686192468619247, 'pixel_accuracy': 0.9994964599609375, 'tp': 463, 'fp': 18, 'fn': 15, 'tn': 65040, 'pred_pixels': 481, 'truth_pixels': 478}
+ONNX metrics: {'dice': 0.9655891553701773, 'iou': 0.9334677419354839, 'precision': 0.9625779625779626, 'recall': 0.9686192468619247, 'pixel_accuracy': 0.9994964599609375, 'tp': 463, 'fp': 18, 'fn': 15, 'tn': 65040, 'pred_pixels': 481, 'truth_pixels': 478}
+Visual diagnostic: C:\AI lab\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\segmentation_parity_visual.png
+
+One-image validation only; do not interpret as test-set performance.

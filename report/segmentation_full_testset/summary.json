@@ -1,0 +1,142 @@
+{
+  "dataset": "BRISC2025 segmentation test split",
+  "images_found": 860,
+  "matched_pairs": 860,
+  "successful_images": 860,
+  "failed_images": 0,
+  "missing_masks": [],
+  "checkpoint": "C:\\AI lab\\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\\models\\segfinal_s2_best.pt",
+  "onnx_model": "C:\\AI lab\\Explainable AI for Brain Tumor Classification Using CNN Transformer with Trust Calibration\\models\\deploy\\segmenter.onnx",
+  "preprocessing_policy": "pad",
+  "image_size": 256,
+  "threshold": 0.5,
+  "empty_gt_images": 0,
+  "empty_gt_false_positive_images": 0,
+  "pt_onnx_mask_agreement_mean": 0.9999999112861101,
+  "pt_onnx_mask_agreement_min": 0.9999847412109375,
+  "logit_max_abs_diff_mean": 0.001033268699985604,
+  "logit_max_abs_diff_max": 0.01221601665019989,
+  "logit_mean_abs_diff_mean": 5.7051621259964744e-05,
+  "relative_l2_diff_mean": 5.667097699574168e-06,
+  "metrics": {
+    "pt_dice": {
+      "mean": 0.868599658194251,
+      "median": 0.9397918869146868,
+      "std": 0.18447815540940804,
+      "bootstrap_95ci_mean": [
+        0.8557772705772525,
+        0.8801385278468721
+      ]
+    },
+    "pt_iou": {
+      "mean": 0.8008037000174957,
+      "median": 0.8864221434613926,
+      "std": 0.20777673342053457,
+      "bootstrap_95ci_mean": [
+        0.7870940588282582,
+        0.8140198275847371
+      ]
+    },
+    "pt_precision": {
+      "mean": 0.8727805717525212,
+      "median": 0.9542913608131,
+      "std": 0.20137587483417632,
+      "bootstrap_95ci_mean": [
+        0.8588135013087654,
+        0.8859284325375423
+      ]
+    },
+    "pt_recall": {
+      "mean": 0.8904339393883376,
+      "median": 0.9506775743775397,
+      "std": 0.17961338061399376,
+      "bootstrap_95ci_mean": [
+        0.8778314741357923,
+        0.9019985223441266
+      ]
+    },
+    "onnx_dice": {
+      "mean": 0.8685995056780725,
+      "median": 0.9397918869146868,
+      "std": 0.18447869005379589,
+      "bootstrap_95ci_mean": [
+        0.855777021207328,
+        0.8801392637415056
+      ]
+    },
+    "onnx_iou": {
+      "mean": 0.8008036445220887,
+      "median": 0.8864221434613926,
+      "std": 0.20777725309128173,
+      "bootstrap_95ci_mean": [
+        0.7870952536086931,
+        0.8140165187554975
+      ]
+    },
+    "onnx_precision": {
+      "mean": 0.8727806977819667,
+      "median": 0.9542913608131,
+      "std": 0.20137718575964267,
+      "bootstrap_95ci_mean": [
+        0.8588134115786799,
+        0.8859258409213173
+      ]
+    },
+    "onnx_recall": {
+      "mean": 0.8904339393883376,
+      "median": 0.9506775743775397,
+      "std": 0.17961338061399376,
+      "bootstrap_95ci_mean": [
+        0.8778314741357923,
+        0.9019985223441266
+      ]
+    },
+    "pt_pixel_accuracy": {
+      "mean": 0.9964004516601562,
+      "median": 0.9983901977539062,
+      "std": 0.006389158900829251,
+      "bootstrap_95ci_mean": [
+        0.9959423331327216,
+        0.9968057685674623
+      ]
+    },
+    "onnx_pixel_accuracy": {
+      "mean": 0.9964004339173783,
+      "median": 0.9983901977539062,
+      "std": 0.00638919617370747,
+      "bootstrap_95ci_mean": [
+        0.9959422799043878,
+        0.9968057690110318
+      ]
+    }
+  },
+  "by_filename_class": {
+    "glioma": {
+      "n": 254,
+      "onnx_dice_mean": 0.7640051697466613,
+      "onnx_dice_median": 0.8748362748362748,
+      "onnx_iou_mean": 0.6764119863625551,
+      "onnx_precision_mean": 0.790963852855537,
+      "onnx_recall_mean": 0.781993915758727,
+      "empty_gt_n": 0
+    },
+    "meningioma": {
+      "n": 306,
+      "onnx_dice_mean": 0.9440757046404037,
+      "onnx_dice_median": 0.9618616272031281,
+      "onnx_iou_mean": 0.8990896520995693,
+      "onnx_precision_mean": 0.9560808547317279,
+      "onnx_recall_mean": 0.9390011105650277,
+      "empty_gt_n": 0
+    },
+    "pituitary": {
+      "n": 300,
+      "onnx_dice_mean": 0.8801703204917559,
+      "onnx_dice_median": 0.9283946251768034,
+      "onnx_iou_mean": 0.8058701873681304,
+      "onnx_precision_mean": 0.8570861330642542,
+      "onnx_recall_mean": 0.9327079781278508,
+      "empty_gt_n": 0
+    }
+  }
+}
